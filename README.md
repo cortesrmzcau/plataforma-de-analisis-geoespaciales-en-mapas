@@ -1,4 +1,4 @@
-### 🌟 **Plataforma de analisis geoespaciales en mapas**
+### 🌟 **Plataforma de analisis geoespaciales en mapas - desarrollado en 2019**
 
 🔔 Proyecto desarrollado en Angular y Plantilla MDB
 Material Design for Bootstrap - Angular
