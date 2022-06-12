@@ -14,9 +14,6 @@ import { PAGES_ROUTES } from './pages.routes';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './general/dashboard/dashboard.component';
 
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster'
-
 @NgModule({
     declarations: [
         PagesComponent,
