@@ -33,10 +33,8 @@ import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluste
         MDBBootstrapModulesPro.forRoot(),
         AgmCoreModule.forRoot({
             // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en#key
-            apiKey: 'AIzaSyCJ1zJa9-jBEKM6ERzDZBuS3zD9rvv9E30',
+            apiKey: '',
           }),
-        LeafletModule,
-        LeafletMarkerClusterModule,
         AgmJsMarkerClustererModule
     ],
     providers: [
