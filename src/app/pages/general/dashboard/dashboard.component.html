@@ -1,0 +1,513 @@
+<section class="general">
+    <div class="dashboard">
+        <div class="full-bg-img">
+            <div class="mask flex-center">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-7 col-xl-8">
+                            <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom"
+                                [fullscreenControl]="true" [styles]="styles" [disableDefaultUI]="false"
+                                [minZoom]="10" [maxZoom]="18">
+                                <div *ngIf="!aviso">
+                                    <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="icoImage"
+                                        [markerDraggable]="true" (dragEnd)="posicionFinalMarcador($event)">
+                                        <div *ngIf="!circleLocation">
+                                            <agm-circle [latitude]="latitude" [longitude]="longitude"
+                                                [(radius)]="circleRadius"
+                                                [fillColor]="'blue'"
+                                                [fillOpacity]="0.3"
+                                                [draggable]="true">
+                                            </agm-circle>
+                                        </div>
+                                    <agm-info-window #window [isOpen]="true">
+                                        <h6 class="text-center">Arrastre el icono para analizar</h6>
+                                        <h6 class="text-center">la zona de su preferencia</h6>
+                                    </agm-info-window>
+                                    </agm-marker>
+                                </div>
+                            </agm-map>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4">
+                            <div *ngIf="aviso">
+                                <div class="aviso">
+                                    <div class="aviso-content">
+                                        <p class="aviso-titulo">AVISO</p>
+                                        <div class="icon-text">
+                                            <mdb-icon fas icon="spinner"></mdb-icon>
+                                            <div>
+                                                <p>Para utilizar la plataforma es necesario dar permisos de ubicación en el explorador en caso de negar el permiso, realizar lo siguiente...</p>
+                                            </div>
+                                        </div>
+                                        <p class="aviso-instrucciones">Instrucciones</p>
+                                        <p>1.- Seleccionar el icono de admiración de la barra de direcciones</p>
+                                        <p>2.- En la opción de ubicación cambiar por "preguntar (predeterminado)"</p>
+                                        <p>3.- Seleccionar la opción de recargar y aceptar el permiso de ubicación</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="no_data">
+                                <div class="aviso">
+                                    <div class="no-data">
+                                        <mdb-icon fas icon="exclamation-circle"></mdb-icon>
+                                        <p>Por el momento no existe información a analizar, intentelo nuevamente en unas horas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="panel">
+                                <div class="menu-desplegable-derecha">
+                                    <div class="card-ciudad">
+                                        <span class="lstick"></span>
+                                        <div *ngIf="!cardInfoLocation">
+                                            <div class="info-city">
+                                                <mdb-icon fas icon="map-marked-alt"></mdb-icon>
+                                                <p>México</p>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="cardInfoLocation">
+                                            <div class="text-center info-city">
+                                                <mdb-icon fas icon="map-marked-alt"></mdb-icon>
+                                                <div>
+                                                    <p>{{ city }} , {{ region }} </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="El nivel de densidad visualiza diferentes prespectivas del mapa"
+                                                    placement="top">
+                                                    <mdb-icon fas icon="sliders-h"></mdb-icon>
+                                                </a>
+                                                <p>Ajusta la densidad del mapa</p>
+                                            </div>
+                                            <div class="landmarks">
+                                                <p>Señales</p>
+                                                <input type="range" list="tickmarks" #rangeLandmarksStep
+                                                (change)="cambiarDensidad(rangeLandmarksStep.value)"
+                                                id="rangeLandmarksStep" value="1" min="1" max="4" step="1">
+                                                <datalist id="tickmarks">
+                                                    <option value="1">
+                                                    <option value="2">
+                                                    <option value="3">
+                                                    <option value="4">
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="El rango seleccionado muestra diferentes resultados de la zona"
+                                                    placement="top">
+                                                    <mdb-icon fas icon="sliders-h"></mdb-icon>
+                                                </a>
+                                                <p>Ajuste el rango de acuerdo a mi ubicación actual</p>
+                                            </div>
+                                            <mdb-range-input default="true" (change)="changeRange($event)"
+                                                id="changeRangeLocation" min="1" max="4">
+                                            </mdb-range-input>
+                                            <div class="inputRangeUbication">
+                                                <strong id="250metros"> {{ doscientoscincuentam }} </strong>
+                                                <strong id="500metros"> {{ trescientoscincuentam }} </strong>
+                                                <strong id="750metros"> {{ quinientoscincuentam }} </strong>
+                                                <strong id="1000metros"> {{ milm }} </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Lista de los productos de mayor interés de la zona"
+                                                    placement="top">
+                                                    <mdb-icon fas icon="star"></mdb-icon>    
+                                                </a>
+                                                <p>Productos</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div class="row" *ngIf="graficaProductosInteres">
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                        <div class="grafica">
+                                                            <canvas mdbChart
+                                                                [chartType]="chartType"
+                                                                [datasets]="vecesProductosInteresParte2"
+                                                                [labels]="productosFavoritosParte2"
+                                                                [colors]="chartColors"
+                                                                [options]="chartOptions">
+                                                            </canvas>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 lista">
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let x of productosFavoritosRecortarString">
+                                                              {{ x.nombre }}
+                                                              <mdb-badge pill="true"> {{ x.veces }} </mdb-badge>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoProductosInteres">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosProductosInteres">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Lista de las categorias de mayor interes de la zona"
+                                                    placement="left">
+                                                    <mdb-icon fas icon="clipboard-list"></mdb-icon>
+                                                </a>
+                                                <p>Categorías</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div class="row" *ngIf="graficaCategoriasInteres">
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                        <div class="grafica no-idea">
+                                                            <canvas mdbChart
+                                                                [chartType]="chartType"
+                                                                [datasets]="vecesCategoriasInteresParte2"
+                                                                [labels]="categoriasProductosInteresParte2"
+                                                                [colors]="chartColors"
+                                                                [options]="chartOptions">
+                                                            </canvas>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 lista">
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let x of categoriasFavoritasRecortarString">
+                                                              {{ x.nombre }}
+                                                              <mdb-badge pill="true"> {{ x.veces }} </mdb-badge>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoCategoriasInteres">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosCategoriasInteres">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Agrupacion de edades con diferentes rangos en relacion a los productos de interés"
+                                                placement="top">
+                                                    <mdb-icon fas icon="users"></mdb-icon>
+                                                </a>
+                                                <p>Edad - Producto</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div class="row" *ngIf="agrupacionEdadProductos">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <div *ngIf="seccion1822">
+                                                            <div class="row">
+                                                                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                                    <div class="container-icono-agrupacion">
+                                                                        <mdb-icon fas icon="user-friends"></mdb-icon>&nbsp;
+                                                                        <div>
+                                                                            <p>18 a 22 años</p>
+                                                                            <p>({{ totalGenero1822 }}) Prospectos</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                                    <div class="container-icono-agrupacion2">
+                                                                        <div>
+                                                                            <div class="container-icono-agrupacion3">
+                                                                                <mdb-icon fas icon="male"></mdb-icon>
+                                                                                <p>&nbsp;&nbsp;{{ totalMujeres1822 }} % Mujeres</p>
+                                                                            </div>
+                                                                            <div class="container-icono-agrupacion3">
+                                                                                <mdb-icon fas icon="female"></mdb-icon>
+                                                                                <p>&nbsp;&nbsp;{{ totalHombres1822 }} % Hombres</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <hr>
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="seccion2327">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-12 col-md-6 col-xl-6 col-lg-6">
+                                                                        <div class="container-icono-agrupacion">
+                                                                            <mdb-icon fas icon="users"></mdb-icon>&nbsp;
+                                                                            <div>
+                                                                                <p>23 a 27 años</p>
+                                                                                <p>({{ totalGenero2327 }}) Prospectos</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-sm-12 col-md-6 col-xl-6 col-lg-6">
+                                                                        <div class="container-icono-agrupacion2">
+                                                                            <div>
+                                                                                <div class="container-icono-agrupacion3">
+                                                                                    <mdb-icon fas icon="male"></mdb-icon>
+                                                                                    <p>&nbsp;&nbsp;{{ totalMujeres2327 }} % Mujeres</p>
+                                                                                </div>
+                                                                                <div class="container-icono-agrupacion3">
+                                                                                    <mdb-icon fas icon="female"></mdb-icon>
+                                                                                    <p>&nbsp;&nbsp;{{ totalHombres2327 }} % Hombres</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <hr>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="seccion2832">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-12 col-md-6 col-xl-6 col-lg-6">
+                                                                        <div class="container-icono-agrupacion">
+                                                                            <mdb-icon fas icon="users"></mdb-icon>&nbsp;
+                                                                            <div>
+                                                                                <p>28 a 32 años</p>
+                                                                                <p>({{ totalGenero2832 }}) Prospectos</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-sm-12 col-md-6 col-xl-6 col-lg-6">
+                                                                        <div class="container-icono-agrupacion2">
+                                                                           <div>
+                                                                                <div class="container-icono-agrupacion3">
+                                                                                    <mdb-icon fas icon="male"></mdb-icon>
+                                                                                    <p>&nbsp;&nbsp;{{ totalMujeres2832 }} % Mujeres</p>
+                                                                                </div>
+                                                                                <div class="container-icono-agrupacion3">
+                                                                                    <mdb-icon fas icon="female"></mdb-icon>
+                                                                                    <p>&nbsp;&nbsp;{{ totalHombres2832 }} % Hombres</p>
+                                                                                </div>
+                                                                           </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <hr>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>    
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoEdadProductos">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosEdadProductos">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Agrupación de los géneros de interés"
+                                                    placement="left">
+                                                    <mdb-icon fas icon="restroom"></mdb-icon>
+                                                </a>
+                                                <p>Genero</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div class="row" *ngIf="graficaGeneroProductos">
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                        <div style="display: block">
+                                                            <canvas mdbChart
+                                                                [chartType]="chartType"
+                                                                [datasets]="graficaGenero"
+                                                                [labels]="graficaLabelGenero"
+                                                                [colors]="chartColorsGenero"
+                                                                [options]="chartOptions"
+                                                                [legend]="true">
+                                                            </canvas>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                        <div class="a">
+                                                            <div class="container-icono-agrupacion2">
+                                                                <p>{{ totalMujeres }} % de Mujeres</p>
+                                                                <p>{{ totalHombres }} % de Hombres</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoGeneroProductos">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosGeneroProductos">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Información destacada en base al producto de mayor interés"
+                                                    placement="top">
+                                                    <mdb-icon fas icon="street-view"></mdb-icon>
+                                                </a>
+                                                <p>Información destacada</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div *ngIf="seccionInformacionDestacada">
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                            <p class="ip">Producto</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip"> {{ productosFavoritosParte2[0] }} </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                            <p class="ip">Precio Promedio</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip">$ {{ totalPrecioPromedioInteresProducto }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                            <p class="ip">Edad Promedio</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip"> {{ edadPromedioInteresProducto }} Años</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6">
+                                                            <p class="ip">Precio promedio de su categoría</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip">$ {{ promedioArregloPrecioPromedioMismaCategoria }} </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoInformacionDestacada">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosInformacionDestacada">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-panel">
+                                        <span class="lstick2"></span>
+                                        <div class="ajustes">
+                                            <div class="titulo">
+                                                <a mdbTooltip="Información adicional en relación al producto de  menor interés"
+                                                    placement="top">
+                                                    <mdb-icon fas icon="street-view"></mdb-icon>
+                                                </a>
+                                                <p>Información adicional</p>
+                                            </div>
+                                            <div class="grafica-lista">
+                                                <div class="row" *ngIf="seccionResultadosInformacionAdicional">
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 p">
+                                                            <p class="ip">Producto</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip"> {{ nombreProductoMenorInteres.slice(0,40) }} </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 p">
+                                                            <p class="ip">Precio</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip">$ {{ precioProductoMenorInteres }} </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 p">
+                                                            <p class="ip">Prospectos</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip"> {{ interesadosProductoMenorInteres }} </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row divip">
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 p">
+                                                            <p class="ip">Categoria</p>
+                                                        </div>
+                                                        <div class="col-6 col-xs-6 col-md-6 col-lg-6 col-xl-6 pip">
+                                                            <p class="ip"> {{ categoriaMenorInteres }} </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="analizandoInformacionAdicional">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>Analizando ...</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="noResultadosInformacionAdicional">
+                                                    <div class="col-12 col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <p>No se encontraron resultados</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
