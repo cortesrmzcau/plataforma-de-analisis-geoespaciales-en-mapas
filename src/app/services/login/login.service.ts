@@ -22,7 +22,7 @@ export class LoginService {
 
   registerEmail(email: string, password: string) {
     return this.afsAuth.createUserWithEmailAndPassword(email, password)
-      .then(res => 
+      .then(res =>
         this.registerDatabase(email, res.user.uid)
       );
   }
@@ -46,7 +46,7 @@ export class LoginService {
     return this.afsAuth.signOut();
   }
 
-  private updateUserData(user) {
+  updateUserData(user) {
     return this.firebase.list('usuarios').snapshotChanges().subscribe(item => {
       if (item.length == 0) {
         return this.firebase.database.ref('usuarios_web/' + user.uid).set({

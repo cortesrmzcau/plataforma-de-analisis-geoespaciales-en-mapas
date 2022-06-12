@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebaseconfig: {
-    apiKey: "AIzaSyAWfCpmmnbb_xDmbpiIsCBdgcVie7BfzLw",
-    authDomain: "aigon-mexico.firebaseapp.com",
-    databaseURL: "https://aigon-mexico.firebaseio.com",
-    projectId: "aigon-mexico",
-    storageBucket: "aigon-mexico.appspot.com",
-    messagingSenderId: "928398746518",
-    appId: "1:928398746518:web:83aafe3035ee54687373b7"
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
   },
 };
 

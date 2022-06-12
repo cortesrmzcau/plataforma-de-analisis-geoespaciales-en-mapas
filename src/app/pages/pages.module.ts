@@ -14,9 +14,6 @@ import { PAGES_ROUTES } from './pages.routes';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './general/dashboard/dashboard.component';
 
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster'
-
 @NgModule({
     declarations: [
         PagesComponent,
@@ -33,10 +30,8 @@ import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluste
         MDBBootstrapModulesPro.forRoot(),
         AgmCoreModule.forRoot({
             // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en#key
-            apiKey: 'AIzaSyCJ1zJa9-jBEKM6ERzDZBuS3zD9rvv9E30',
+            apiKey: '',
           }),
-        LeafletModule,
-        LeafletMarkerClusterModule,
         AgmJsMarkerClustererModule
     ],
     providers: [
